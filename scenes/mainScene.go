@@ -41,25 +41,21 @@ func (s *MainScene) Show() {
 }
 
 func (s *MainScene) Run() {
-	p := models.NewEstacionamiento(make(chan int, 20), &sync.Mutex{}) // Asegúrate de que `p` se utiliza adecuadamente en tu lógica
-
+	p := models.NewEstacionamiento(make(chan int, 20), &sync.Mutex{})
 	var wg sync.WaitGroup
 
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func(id int) {
 			auto := models.NewAuto(id)
-
-			xInicial := 40 + float32(id*35) // Ajusta según el tamaño de tu ventana
 			imagen := auto.GetImagenEntrada()
 			imagen.Resize(fyne.NewSize(30, 50))
-			imagen.Move(fyne.NewPos(xInicial, -10))
+			imagen.Move(fyne.NewPos(40, -10))
 
 			contenedor.Add(imagen)
 			contenedor.Refresh()
 
-			auto.Iniciar(p, contenedor, &wg) // Asegúrate de pasar `p` aquí
-
+			auto.Iniciar(p, contenedor, &wg)
 		}(i)
 		var poisson = generarPoisson(float64(2))
 		time.Sleep(time.Second * time.Duration(poisson))
