@@ -46,7 +46,7 @@ func (s *MainScene) Show() {
 		contenedor.Add(spaceOutline)
 	}
 
-	puerta := canvas.NewRectangle(color.RGBA{R: 255, G: 0, B: 255, A: 255}) //Entrada puerta
+	puerta := canvas.NewRectangle(color.RGBA{R: 231, G: 231, B: 10, A: 231}) //Entrada puerta
 	puerta.Resize(fyne.NewSize(100, 10))
 	puerta.Move(fyne.NewPos(30, 245))
 
