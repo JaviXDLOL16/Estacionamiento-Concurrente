@@ -25,7 +25,7 @@ func NewAuto(id int) *Auto {
 	imagenSalida := canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_salida.png"))
 	return &Auto{
 		id:              id,
-		tiempoLim:       time.Duration(rand.Intn(50)+50) * time.Second,
+		tiempoLim:       time.Duration(rand.Intn(40)+5) * time.Second,
 		espacioAsignado: 0,
 		imagenEntrada:   imagenEntrada,
 		imagenEspera:    imagenEspera,

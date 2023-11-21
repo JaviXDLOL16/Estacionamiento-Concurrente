@@ -15,7 +15,7 @@ func NewMainView() *MainView {
 
 func (v *MainView) Run() {
 	myApp := app.New()
-	window := myApp.NewWindow("Simulador estacionamientos")
+	window := myApp.NewWindow("Estacionamiento concurrentes")
 	window.CenterOnScreen()
 	window.SetFixedSize(true)
 	window.Resize(fyne.NewSize(700, 400))

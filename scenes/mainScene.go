@@ -17,32 +17,36 @@ type MainScene struct {
 }
 
 func NewMainScene(window fyne.Window) *MainScene {
-	return &MainScene{
-		window: window,
-	}
+	return &MainScene{window: window}
 }
 
 var contenedor = container.NewWithoutLayout()
 
 func (s *MainScene) Show() {
+	// Cargar imagen de fondo
+	fondo := canvas.NewImageFromFile("./assets/estacionamiento_suelo.png")
+	fondo.FillMode = canvas.ImageFillStretch
+	fondo.Resize(fyne.NewSize(700, 400))
+	contenedor.Add(fondo)
+
 	contorno := canvas.NewRectangle(color.Transparent)
-	contorno.StrokeWidth = 3
-	contorno.StrokeColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
+	contorno.StrokeWidth = 10
+	contorno.StrokeColor = color.Transparent //borde estacionamiento
 	contorno.Resize(fyne.NewSize(690, 140))
 	contorno.Move(fyne.NewPos(0, 250))
 
 	// Delimitar los espacios de estacionamiento
 	for i := 0; i < 20; i++ {
-		spaceOutline := canvas.NewRectangle(color.RGBA{R: 0, G: 0, B: 255, A: 255}) // Color azul para las líneas
+		spaceOutline := canvas.NewRectangle(color.RGBA{R: 0, G: 0, B: 255, A: 255})
 		spaceOutline.StrokeWidth = 2
-		spaceOutline.StrokeColor = color.RGBA{R: 0, G: 0, B: 255, A: 255} // Color azul
-		spaceOutline.FillColor = color.Transparent                        // Sin relleno
-		spaceOutline.Resize(fyne.NewSize(25, 50))                         // Tamaño del espacio de estacionamiento
-		spaceOutline.Move(fyne.NewPos(83+float32(i*30), 330))             // Posición de cada espacio
+		spaceOutline.StrokeColor = color.RGBA{R: 231, G: 231, B: 10, A: 255} // borde contenedor
+		spaceOutline.FillColor = color.RGBA{R: 108, G: 107, B: 112, A: 1}    // dentro contenedor
+		spaceOutline.Resize(fyne.NewSize(25, 50))
+		spaceOutline.Move(fyne.NewPos(83+float32(i*30), 330))
 		contenedor.Add(spaceOutline)
 	}
 
-	puerta := canvas.NewRectangle(color.RGBA{R: 255, G: 0, B: 0, A: 255})
+	puerta := canvas.NewRectangle(color.RGBA{R: 255, G: 0, B: 255, A: 255}) //Entrada puerta
 	puerta.Resize(fyne.NewSize(100, 10))
 	puerta.Move(fyne.NewPos(30, 245))
 
@@ -53,7 +57,6 @@ func (s *MainScene) Show() {
 
 func (s *MainScene) Run() {
 	p := models.NewEstacionamiento(make(chan int, 20), &sync.Mutex{})
-
 	var wg sync.WaitGroup
 
 	for i := 0; i < 100; i++ {
