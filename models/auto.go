@@ -25,7 +25,7 @@ func NewAuto(id int) *Auto {
 	imagenSalida := canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_salida.png"))
 	return &Auto{
 		id:              id,
-		tiempoLim:       time.Duration(rand.Intn(40)+5) * time.Second,
+		tiempoLim:       time.Duration(rand.Intn(50)+50) * time.Second,
 		espacioAsignado: 0,
 		imagenEntrada:   imagenEntrada,
 		imagenEspera:    imagenEspera,
@@ -36,20 +36,21 @@ func NewAuto(id int) *Auto {
 func (a *Auto) Entrar(p *Estacionamiento, contenedor *fyne.Container) {
 	p.GetEspacios() <- a.GetId()
 	p.GetPuertaMu().Lock()
+
 	espacios := p.GetEspaciosArray()
 
-	anchoEspacio := 30
-	inicioEspacios := (700 - float32(20*anchoEspacio)) / 2
+	a.Avanzar(5)
 
 	for i := 0; i < len(espacios); i++ {
-		if !espacios[i] {
+		if espacios[i] == false {
 			espacios[i] = true
 			a.espacioAsignado = i
-			a.imagenEntrada.Move(fyne.NewPos(inicioEspacios+float32(i*anchoEspacio), 350))
+			a.imagenEntrada.Move(fyne.NewPos(float32(650-(i*30)), 330))
 			break
 		}
 	}
 	p.SetEspaciosArray(espacios)
+
 	p.GetPuertaMu().Unlock()
 	contenedor.Refresh()
 }
@@ -64,25 +65,34 @@ func (a *Auto) Salir(p *Estacionamiento, contenedor *fyne.Container) {
 
 	p.GetPuertaMu().Unlock()
 
-	contenedor.Remove(a.imagenEntrada)
-	a.imagenEspera.Resize(fyne.NewSize(30, 50))
-	a.imagenEspera.Move(fyne.NewPos(40+float32(a.espacioAsignado*35), 350))
-	contenedor.Add(a.imagenEspera)
-	contenedor.Refresh()
-
-	time.Sleep(a.tiempoLim)
-
 	contenedor.Remove(a.imagenEspera)
+	a.imagenSalida.Resize(fyne.NewSize(30, 50))
+	a.imagenSalida.Move(fyne.NewPos(90, 290))
+
+	contenedor.Add(a.imagenSalida)
 	contenedor.Refresh()
 
-	p.GetEspacios() <- a.GetId()
+	for i := 0; i < 10; i++ {
+		a.imagenSalida.Move(fyne.NewPos(a.imagenSalida.Position().X, a.imagenSalida.Position().Y-30))
+		time.Sleep(time.Millisecond * 200)
+	}
+
+	contenedor.Remove(a.imagenSalida)
+	contenedor.Refresh()
 }
 
 func (a *Auto) Iniciar(p *Estacionamiento, contenedor *fyne.Container, wg *sync.WaitGroup) {
-	defer wg.Done()
+	a.Avanzar(9)
+
 	a.Entrar(p, contenedor)
+
 	time.Sleep(a.tiempoLim)
+
+	contenedor.Remove(a.imagenEntrada)
+	a.imagenEspera.Resize(fyne.NewSize(50, 30))
+	p.ColaSalida(contenedor, a.imagenEspera)
 	a.Salir(p, contenedor)
+	wg.Done()
 }
 
 func (a *Auto) Avanzar(pasos int) {
