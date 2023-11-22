@@ -82,7 +82,7 @@ func (a *Car) Leave(p *Park, contenedor *fyne.Container) {
 }
 
 func (a *Car) Start(p *Park, contenedor *fyne.Container, wg *sync.WaitGroup) {
-	a.Advance(18)
+	a.Advance(9)
 
 	a.Enter(p, contenedor)
 
@@ -97,7 +97,7 @@ func (a *Car) Start(p *Park, contenedor *fyne.Container, wg *sync.WaitGroup) {
 
 func (a *Car) Advance(pasos int) {
 	for i := 0; i < pasos; i++ {
-		a.imageEnter.Move(fyne.NewPos(a.imageEnter.Position().X, a.imageEnter.Position().Y+8)) //Funcion para avanzar
+		a.imageEnter.Move(fyne.NewPos(a.imageEnter.Position().X, a.imageEnter.Position().Y+15)) //Funcion para avanzar
 		time.Sleep(time.Millisecond * 200)
 	}
 }
