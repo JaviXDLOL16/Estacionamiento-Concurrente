@@ -16,7 +16,7 @@ type MainScene struct {
 	window fyne.Window
 }
 
-func NewMainScene(window fyne.Window) *MainScene {
+func NewMainScene(window fyne.Window) *MainScene { //LLamas la ventana
 	return &MainScene{window: window}
 }
 
@@ -51,28 +51,28 @@ func (s *MainScene) Show() {
 	puerta.Move(fyne.NewPos(30, 245))
 
 	contenedor.Add(contorno)
-	contenedor.Add(puerta)
+	contenedor.Add(puerta) //Aqui se agregan los objetos
 	s.window.SetContent(contenedor)
 }
 
 func (s *MainScene) Run() {
-	p := models.NewEstacionamiento(make(chan int, 20), &sync.Mutex{})
+	p := models.NewPark(make(chan int, 20), &sync.Mutex{})
 	var wg sync.WaitGroup
 
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func(id int) {
-			auto := models.NewAuto(id)
-			imagen := auto.GetImagenEntrada()
-			imagen.Resize(fyne.NewSize(30, 50))
+			Car := models.NewCar(id)
+			imagen := Car.GetimageEnter()
+			imagen.Resize(fyne.NewSize(30, 50)) //Aqui se generan los autos y se redefine la imagen elegida
 			imagen.Move(fyne.NewPos(40, -10))
 
-			contenedor.Add(imagen)
+			contenedor.Add(imagen) //Se genera la imagen
 			contenedor.Refresh()
 
-			auto.Iniciar(p, contenedor, &wg)
+			Car.Start(p, contenedor, &wg)
 		}(i)
-		var poisson = generarPoisson(float64(2))
+		var poisson = generarPoisson(float64(2)) //Se usa una libreria de estadistica para retrasar la aparicion uno o dos segundos
 		time.Sleep(time.Second * time.Duration(poisson))
 	}
 
@@ -80,6 +80,6 @@ func (s *MainScene) Run() {
 }
 
 func generarPoisson(lambda float64) float64 {
-	poisson := distuv.Poisson{Lambda: lambda, Src: nil}
+	poisson := distuv.Poisson{Lambda: lambda, Src: nil} //Metodo poisson
 	return poisson.Rand()
 }
