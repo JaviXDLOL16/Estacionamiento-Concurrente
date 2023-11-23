@@ -10,6 +10,15 @@ import (
 	"fyne.io/fyne/v2/storage"
 )
 
+type Car struct {
+	id              int
+	tiempoLim       time.Duration
+	espacioAsignado int
+	imageEnter      *canvas.Image
+	imageWait       *canvas.Image //Se le asignan sus respectivos valores
+	imageLeave      *canvas.Image
+}
+
 func NewCar(id int) *Car {
 	imageEnter := canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_entrada.png"))
 	imageWait := canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_espera.png")) //Mandas a llamar las iamgenes con sus tres modos
@@ -22,15 +31,6 @@ func NewCar(id int) *Car {
 		imageWait:       imageWait, //Creas el objeto car (Son los carritos)
 		imageLeave:      imageLeave,
 	}
-}
-
-type Car struct {
-	id              int
-	tiempoLim       time.Duration
-	espacioAsignado int
-	imageEnter      *canvas.Image
-	imageWait       *canvas.Image //Se le asignan sus respectivos valores
-	imageLeave      *canvas.Image
 }
 
 func (a *Car) Enter(p *Park, contenedor *fyne.Container) {
@@ -95,8 +95,8 @@ func (a *Car) Start(p *Park, contenedor *fyne.Container, wg *sync.WaitGroup) {
 	wg.Done()
 }
 
-func (a *Car) Advance(pasos int) {
-	for i := 0; i < pasos; i++ {
+func (a *Car) Advance(steps int) {
+	for i := 0; i < steps; i++ {
 		a.imageEnter.Move(fyne.NewPos(a.imageEnter.Position().X, a.imageEnter.Position().Y+15)) //Funcion para avanzar
 		time.Sleep(time.Millisecond * 200)
 	}
